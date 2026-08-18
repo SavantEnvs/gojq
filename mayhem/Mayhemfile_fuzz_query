@@ -1,0 +1,8 @@
+project: savantenvs/gojq
+target: fuzz_query
+testsuite:
+  - https://$MAYHEM_DOMAIN/$MAYHEM_PROJECT/$MAYHEM_TARGET/testsuite.tar
+  - file://mayhem/fuzz_query/testsuite
+cmds:
+  - cmd: /mayhem/fuzz_query
+    libfuzzer: true

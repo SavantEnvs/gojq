@@ -1,0 +1,1 @@
+def f: . as $x | $x, (if $x < 3 then $x + 1 | f else empty end), $x; f

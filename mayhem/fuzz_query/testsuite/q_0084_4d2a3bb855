@@ -1,0 +1,1 @@
+. as $x | if (.foo,.bar) as $x | $x then 1 as $x | $x else 2 as $x | $x end | [., $x]

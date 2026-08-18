@@ -1,0 +1,1 @@
+builtins | sort[] | select(test("debug|stderr"))

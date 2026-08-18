@@ -1,0 +1,54 @@
+//go:build go1.18
+
+// mayhem harness — gojq QUERY lexer/parser/compiler surface.
+//
+// Fuzzes gojq.Parse + gojq.Compile: the untrusted input here is the jq QUERY
+// PROGRAM text itself (lexer -> parser -> compiler), i.e. the "compile an
+// attacker-supplied jq script" threat model. No execution/interpretation —
+// see harness_query_run_test.go.src for the deeper (parse+compile+run) target
+// that also drives the bytecode interpreter over a JSON document.
+//
+// This is NOT upstream's own fuzz target (FuzzQueryRun in query_test.go);
+// upstream only ships the run variant. This shallower parse/compile-only
+// target is added because the parser/compiler is a distinct, interesting
+// attack surface on its own (a query is untrusted text in many jq-embedding
+// tools) and gets its own seed corpus (jq program text) instead of being
+// folded into the run target's seeds (JSON documents).
+//
+// No file I/O: bytes come only from the fuzzer, via go-118-fuzz-build's
+// go-fuzz-headers string consumer. Seeds are supplied by Mayhem via the
+// Mayhemfile `testsuite:` directive (docs/seed-corpus.md), not read from disk
+// here.
+//
+// PACKAGE NOTE: this is `package gojq` (the internal package), NOT the
+// `gojq_test` external test package upstream's own query_test.go uses.
+// go-118-fuzz-build rewrites the target file into an ordinary (non-_test.go)
+// source file in place to build it; a directory can hold only one non-test
+// package, so a harness declared as `gojq_test` collides with the root
+// `gojq` package at that step ("found packages gojq ... and gojq_test ...")
+// and the build fails. Declaring `package gojq` avoids the collision — same
+// public API, called unqualified from inside the package.
+package gojq
+
+import (
+	"testing"
+)
+
+func FuzzMayhemQuery(f *testing.F) {
+	f.Fuzz(func(t *testing.T, src string) {
+		// A pathologically long query mostly just burns CPU in the lexer/parser
+		// without adding coverage; keep the fuzzer's iteration rate high.
+		if len(src) > 8192 {
+			return
+		}
+		q, err := Parse(src)
+		if err != nil {
+			// A syntax error is an expected outcome for untrusted text, not a finding.
+			return
+		}
+		// Compile without executing: drives name resolution, module/import
+		// handling (which will fail to resolve — expected, no loader is wired
+		// up here) and bytecode emission.
+		_, _ = Compile(q)
+	})
+}

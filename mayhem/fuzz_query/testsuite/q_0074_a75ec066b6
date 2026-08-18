@@ -1,0 +1,1 @@
+reduce range(5) as $x (range(3); . + $x)

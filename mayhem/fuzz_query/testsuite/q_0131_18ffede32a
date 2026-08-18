@@ -1,0 +1,1 @@
+sub("a"; "b"), sub("aaa"; "b"), sub("a"; "b","c"), sub("a(?<a>.)"; "\(.a)b\(.a)"; "ig"), sub("(?<foo>★)"; "\(.foo)☆\(.foo)"), sub("^"; "b"), sub("a"; empty)

@@ -1,0 +1,1 @@
+def fact($n): if $n < 1 then 1 else $n * fact($n - 1) end; (range(30;51) | "\(.)! = \(fact(.))"), fact(50) / fact(30), fact(50) % (fact(30) + 1), fact(100), fact(1000)*1.0, 1/fact(1000), -1/fact(1000), 1.0/fact(1000)

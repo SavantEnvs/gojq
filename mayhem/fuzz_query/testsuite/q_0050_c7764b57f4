@@ -1,0 +1,1 @@
+("x" | try rtrimstr({}) catch .), (10 | try rtrimstr("x") catch .)

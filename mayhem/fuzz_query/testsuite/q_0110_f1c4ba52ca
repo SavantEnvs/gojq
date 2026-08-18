@@ -1,0 +1,1 @@
+[range(.)] | .[range(length)] = 1 | add

@@ -1,0 +1,1 @@
+def f: def f($x): .; f(.x) | .x; f += f

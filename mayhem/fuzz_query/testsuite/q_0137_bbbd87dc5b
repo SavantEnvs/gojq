@@ -1,0 +1,1 @@
+label $out | . as {$a} ?// [$a] ?// $a | {$a}, halt

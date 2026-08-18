@@ -1,0 +1,1 @@
+first(range(1; 200) | . as $x | select(all(range(1; 7); $x % . == 0)))

@@ -1,0 +1,1 @@
+[range(.) | {key:tostring,value:.}] | from_entries | .[] |= . * 2 | add

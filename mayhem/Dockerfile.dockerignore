@@ -1,0 +1,29 @@
+# Overrides gojq's upstream ROOT .dockerignore for THIS build (`docker build -f
+# mayhem/Dockerfile`): BuildKit prefers a `<dockerfile-path>.dockerignore` over the
+# context-root `.dockerignore` when present, entirely replacing it rather than merging
+# (verified empirically: a per-Dockerfile ignore file makes the root one inert).
+#
+# LOAD-BEARING, not cosmetic. gojq's own (upstream, untouchable) root .dockerignore
+# excludes `**/*_test.go`, `**/*.json`, `**/*.yaml`, and `.github` — that would silently
+# strip upstream's ENTIRE test suite (query_test.go, compiler_test.go, cli/cli_test.go,
+# etc. — the source of mayhem/test.sh's "go test ./..." behavioral assertions) and all
+# JSON/YAML test fixtures out of THIS build's context, defeating SPEC §6.2 items 2/3
+# (full source retained) and §6.3 (behavioral oracle) without any visible error — `go
+# test ./...` would just silently run zero test files and "pass". It does NOT affect
+# fuzz seeds: per docs/seed-corpus.md, `mayhem/<target>/testsuite/` is never read from
+# the image regardless (seeds are collected off the CI runner checkout), so this file
+# does not need to special-case that path.
+#
+# Keep this conservative — build artifacts and editor/OS cruft only — so the image still
+# gets the full source tree (including .git, required by SPEC §6.2 item 2).
+build/
+out/
+*.o
+*.a
+*.so
+*.dylib
+**/__pycache__/
+
+.DS_Store
+*.swp
+*~

@@ -1,0 +1,1 @@
+def update: .[1:]; [range(3)] | while(length>0; update)
